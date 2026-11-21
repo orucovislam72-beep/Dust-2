@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Королевские Шахматы — Шахматная игра</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-theme="wood">
+  <!-- Ghost element for piece drag-and-drop -->
+  <div id="drag-ghost"></div>
+
+  <!-- ==================== ГЛАВНОЕ МЕНЮ ==================== -->
+  <div id="main-menu" class="menu-overlay">
+    <div class="menu-decor" aria-hidden="true">
+      <span class="deco-piece deco-1" data-piece="wQ"></span>
+      <span class="deco-piece deco-2" data-piece="wN"></span>
+      <span class="deco-piece deco-3" data-piece="wR"></span>
+      <span class="deco-piece deco-4" data-piece="wB"></span>
+    </div>
+
+    <div class="menu-shell">
+      <header class="menu-topbar">
+        <div class="menu-brand">
+          <span class="menu-brand-icon" data-piece="wK"></span>
+          <span class="menu-brand-text">Королевские <b>Шахматы</b></span>
+        </div>
+
+        <nav class="menu-nav">
+          <button class="menu-nav-btn active" data-screen="home">Главная</button>
+          <button class="menu-nav-btn" data-screen="play">Играть</button>
+          <button class="menu-nav-btn" data-screen="bots">Боты</button>
+          <button class="menu-nav-btn" data-screen="online">Онлайн</button>
+          <button class="menu-nav-btn" data-screen="analysis">Анализ</button>
+          <button class="menu-nav-btn" data-screen="settings">Настройки</button>
+        </nav>
+
+        <button id="menu-close-btn" class="btn btn-outline"><span class="ico" data-icon="close"></span> В игру</button>
+      </header>
+
+      <div class="menu-content">
+        <!-- ---------- Главная ---------- -->
+        <section class="menu-screen active" data-screen="home">
+          <div class="hero">
+            <div class="hero-badge" data-piece="wK"></div>
+            <h1 class="hero-title">Королевские <span>Шахматы</span></h1>
+            <p class="hero-subtitle">
+              Полноценные шахматы по правилам ФИДЕ: 16 уникальных соперников с разными стилями игры,
+              разбор партии ход за ходом и полный набор правил — от взятия на проходе до тройного повторения.
+            </p>
+
+            <div class="hero-actions">
+              <button class="btn btn-primary btn-lg" data-go-screen="play"><span class="ico" data-icon="swords"></span> Играть</button>
+              <button class="btn btn-lg" data-go-screen="bots"><span class="ico" data-icon="robot"></span> Боты</button>
+              <button class="btn btn-lg" data-go-screen="online"><span class="ico" data-icon="users"></span> Онлайн</button>
+              <button class="btn btn-lg" data-go-screen="analysis"><span class="ico" data-icon="chart"></span> Анализ</button>
+            </div>
+
+            <div class="hero-stats">
+              <div class="hero-stat"><span>15</span><em>ботов</em></div>
+              <div class="hero-stat"><span>5</span><em>разделов</em></div>
+              <div class="hero-stat"><span>2851</span><em>макс. ЭЛО</em></div>
+              <div class="hero-stat"><span>∞</span><em>возможностей</em></div>
+            </div>
+          </div>
+
+          <div class="feature-grid">
+            <div class="feature-card">
+              <span class="feature-icon" data-icon="crown"></span>
+              <h4>Разделы ботов</h4>
+              <p>Гроссмейстеры, мастера, кандидаты в мастера, клубные игроки и новички — у каждого свой рейтинг и характер.</p>
+            </div>
+            <div class="feature-card">
+              <span class="feature-icon" data-icon="sparkle"></span>
+              <h4>Особые способности</h4>
+              <p>Агрессия, интуиция, любовь к слонам, феноменальный эндгейм — стиль бота реально меняет его игру.</p>
+            </div>
+            <div class="feature-card">
+              <span class="feature-icon" data-icon="chart"></span>
+              <h4>Анализ матча</h4>
+              <p>После партии — разбор каждого хода: точность, ошибки, провалы и блестящие решения.</p>
+            </div>
+            <div class="feature-card">
+              <span class="feature-icon" data-icon="book"></span>
+              <h4>Все правила</h4>
+              <p>Рокировка, превращение, взятие на проходе, пат, ничья по 50 ходам и по троекратному повторению.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ---------- Играть ---------- -->
+        <section class="menu-screen" data-screen="play">
+          <h2 class="screen-title">Новая партия</h2>
+          <p class="screen-subtitle">Выберите режим, соперника и контроль времени.</p>
+
+          <div class="play-layout">
+            <div class="play-modes">
+              <button class="mode-card active" data-mode="pve">
+                <span class="mode-icon" data-icon="user"></span>
+                <span class="mode-title">Против бота</span>
+                <span class="mode-desc">Вы против искусственного интеллекта</span>
+              </button>
+              <button class="mode-card" data-mode="pvp">
+                <span class="mode-icon" data-icon="users"></span>
+                <span class="mode-title">Два игрока</span>
+                <span class="mode-desc">Партия на одном экране</span>
+              </button>
+              <button class="mode-card" data-mode="eve">
+                <span class="mode-icon" data-icon="robot"></span>
+                <span class="mode-title">Бот против бота</span>
+                <span class="mode-desc">Наблюдение за матчем ИИ</span>
+              </button>
+            </div>
+
+            <div class="play-options">
+              <div class="option-block" id="opt-opponent">
+                <label>Ваш соперник</label>
+                <select id="play-bot-select"></select>
+                <button id="play-random-bot" class="btn btn-outline btn-block"><span class="ico" data-icon="dice"></span> Случайный соперник</button>
+              </div>
+
+              <div class="option-block" id="opt-opponent2" style="display:none;">
+                <label>Соперник за чёрных</label>
+                <select id="play-bot2-select"></select>
+              </div>
+
+              <div class="option-block" id="opt-side">
+                <label>Играть фигурами</label>
+                <div class="radio-group" id="menu-side-cards">
+                  <div class="radio-card active" data-side="w"><span><span class="ico" data-piece="wP"></span> Белые</span></div>
+                  <div class="radio-card" data-side="random"><span><span class="ico" data-icon="dice"></span> Случайно</span></div>
+                  <div class="radio-card" data-side="b"><span><span class="ico" data-piece="bP"></span> Чёрные</span></div>
+                </div>
+              </div>
+
+              <div class="option-block">
+                <label>Контроль времени</label>
+                <select id="play-time-select"></select>
+              </div>
+
+              <button id="play-start-btn" class="btn btn-primary btn-lg btn-block"><span class="ico" data-icon="swords"></span> Начать партию</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ---------- Боты ---------- -->
+        <section class="menu-screen" data-screen="bots">
+          <h2 class="screen-title">Боты</h2>
+          <p class="screen-subtitle">Каждый соперник имеет свой рейтинг ЭЛО, стиль игры и особые способности.</p>
+
+          <div class="bots-toolbar">
+            <input type="text" id="bot-search" placeholder="Поиск по имени, стилю или способности...">
+            <div class="bot-filters" id="bot-filters"></div>
+          </div>
+
+          <div id="bots-list" class="bots-list"></div>
+        </section>
+
+        <!-- ---------- Онлайн ---------- -->
+        <section class="menu-screen" data-screen="online">
+          <div class="online-head">
+            <div>
+              <h2 class="screen-title">Онлайн-игра</h2>
+              <p class="screen-subtitle">Играйте с людьми: матчмейкинг по ЭЛО, вызовы, комнаты и зрители.</p>
+            </div>
+            <div class="online-conn" id="online-conn"><span class="online-dot"></span> Подключение...</div>
+          </div>
+
+          <div class="online-layout">
+            <div class="online-main">
+              <div class="online-profile card">
+                <div class="online-profile-title">Ваш профиль</div>
+                <div class="online-profile-row">
+                  <input id="online-name" type="text" maxlength="24" placeholder="Ваше имя">
+                  <button id="online-save" class="btn btn-outline"><span class="ico" data-icon="check"></span> Сохранить</button>
+                </div>
+                <div class="online-profile-meta">
+                  <span>Рейтинг: <b id="online-rating">1500</b></span>
+                  <label>Контроль: <select id="online-tc"></select></label>
+                </div>
+              </div>
+
+              <div class="online-actions">
+                <button id="online-matchmaking" class="online-action primary">
+                  <span class="ico" data-icon="crosshair"></span>
+                  <span><b>Подбор</b><small>Найти соперника</small></span>
+                </button>
+                <button id="online-room-create" class="online-action">
+                  <span class="ico" data-icon="plus"></span>
+                  <span><b>Создать комнату</b><small>Игра с другом по коду</small></span>
+                </button>
+                <div class="online-action join-room">
+                  <span class="ico" data-icon="download"></span>
+                  <span><b>Войти по коду</b><input id="online-room-code" maxlength="6" placeholder="КОД"></span>
+                  <button id="online-room-join" class="btn btn-primary btn-sm">Войти</button>
+                </div>
+              </div>
+
+              <!-- Панель подбора соперника -->
+              <div id="online-match-panel" class="online-match-panel" style="display:none;">
+                <div class="match-panel-head">
+                  <span class="ico" data-icon="crosshair"></span>
+                  <div class="match-panel-title">
+                    <b>Подбор соперника</b>
+                    <small id="match-status-text">Настройте параметры и нажмите «Начать»</small>
+                  </div>
+                  <button id="match-panel-close" class="btn btn-mini" title="Закрыть">
+                    <span class="ico" data-icon="close"></span>
+                  </button>
+                </div>
+                <div class="match-panel-body">
+                  <label class="match-field">
+                    <span>Контроль времени</span>
+                    <select id="match-tc"></select>
+                  </label>
+                  <button id="match-start" class="btn btn-primary btn-lg btn-block">Начать</button>
+                </div>
+                <div class="match-rated-row">
+                  <span>Тип партии</span>
+                  <div class="match-rated-switch" id="match-rated-switch">
+                    <button type="button" data-rated="1" class="active">С ЭЛО</button>
+                    <button type="button" data-rated="0">Без ЭЛО</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="online-room-result" id="online-room-result" style="display:none;">
+                <span>Код комнаты: <b id="online-room-code-value"></b></span>
+                <button id="online-room-copy" class="btn btn-outline btn-sm"><span class="ico" data-icon="copy"></span> Копировать</button>
+                <button id="online-room-cancel" class="btn btn-outline btn-sm">Отмена</button>
+              </div>
+
+              <div class="card online-lobby-card">
+                <div class="online-list-title">Игроки онлайн <span id="online-count" class="pill">0</span></div>
+                <div id="online-lobby" class="online-lobby"></div>
+              </div>
+
+              <div class="card online-lobby-card">
+                <div class="online-list-title">Партии идут сейчас <span id="online-playing-count" class="pill">0</span></div>
+                <div id="online-playing" class="online-lobby"></div>
+              </div>
+            </div>
+
+            <div class="online-side">
+              <div class="card online-chat-card">
+                <div class="online-list-title">Чат <span class="ico" data-icon="users"></span></div>
+                <div id="online-chat-log" class="online-chat-log"></div>
+                <div class="online-chat-input">
+                  <input id="online-chat-text" maxlength="300" placeholder="Сообщение...">
+                  <button id="online-chat-send" class="btn btn-primary btn-sm"><span class="ico" data-icon="play"></span></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ---------- Анализ ---------- -->
+        <section class="menu-screen" data-screen="analysis">
+          <h2 class="screen-title">Анализ партий</h2>
+          <p class="screen-subtitle">Выберите сыгранную партию для подробного разбора.</p>
+          <div id="saved-games-list" class="saved-games-list"></div>
+        </section>
+
+        <!-- ---------- Настройки ---------- -->
+        <section class="menu-screen" data-screen="settings">
+          <h2 class="screen-title">Настройки</h2>
+          <p class="screen-subtitle">Настройте доску, игру, звук и данные.</p>
+
+          <div class="settings-block">
+            <h3>Тема доски</h3>
+            <div class="theme-grid">
+              <button class="theme-swatch active" data-theme="wood">
+                <span class="swatch-preview swatch-wood"><i></i><i></i><i></i><i></i></span>
+                <span>Деревянная</span>
+              </button>
+              <button class="theme-swatch" data-theme="green">
+                <span class="swatch-preview swatch-green"><i></i><i></i><i></i><i></i></span>
+                <span>Турнирная</span>
+              </button>
+              <button class="theme-swatch" data-theme="blue">
+                <span class="swatch-preview swatch-blue"><i></i><i></i><i></i><i></i></span>
+                <span>Морская</span>
+              </button>
+              <button class="theme-swatch" data-theme="cyber">
+                <span class="swatch-preview swatch-cyber"><i></i><i></i><i></i><i></i></span>
+                <span>Киберпанк</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="settings-block">
+            <h3>Доска</h3>
+            <button class="switch-row" id="set-coords">
+              <span class="switch-icon" data-icon="target"></span>
+              <span class="switch-label">Координаты (a–h, 1–8)</span>
+              <span class="switch-state">Включено</span>
+            </button>
+            <button class="switch-row" id="set-lastmove">
+              <span class="switch-icon" data-icon="dot"></span>
+              <span class="switch-label">Подсветка последнего хода</span>
+              <span class="switch-state">Включено</span>
+            </button>
+            <button class="switch-row" id="set-hints">
+              <span class="switch-icon" data-icon="bulb"></span>
+              <span class="switch-label">Подсказки легальных ходов</span>
+              <span class="switch-state">Включено</span>
+            </button>
+          </div>
+
+          <div class="settings-block">
+            <h3>Игра</h3>
+            <button class="switch-row" id="set-autoqueen">
+              <span class="switch-icon" data-icon="crown"></span>
+              <span class="switch-label">Автоматический ферзь при превращении</span>
+              <span class="switch-state">Выключено</span>
+            </button>
+            <div class="setting-select-row">
+              <label for="set-tc">Контроль времени по умолчанию</label>
+              <select id="set-tc"></select>
+            </div>
+            <div class="setting-select-row">
+              <label for="set-level">Уровень ИИ по умолчанию</label>
+              <select id="set-level">
+                <option value="1">Новичок</option>
+                <option value="2">Любитель</option>
+                <option value="3" selected>Мастер</option>
+                <option value="4">Гроссмейстер</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="settings-block">
+            <h3>Звук</h3>
+            <button id="menu-sound-switch" class="switch-row">
+              <span class="switch-icon" data-icon="sound"></span>
+              <span class="switch-label">Звуки шахмат</span>
+              <span class="switch-state">Включено</span>
+            </button>
+          </div>
+
+          <div class="settings-block">
+            <h3>Данные</h3>
+            <button class="switch-row" id="set-reset-rating">
+              <span class="switch-icon" data-icon="refresh"></span>
+              <span class="switch-label">Сбросить онлайн-рейтинг до 1500</span>
+              <span class="switch-state"></span>
+            </button>
+            <button class="switch-row" id="set-clear-games">
+              <span class="switch-icon" data-icon="close"></span>
+              <span class="switch-label">Очистить историю партий</span>
+              <span class="switch-state"></span>
+            </button>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== ДЕТАЛИ БОТА ==================== -->
+  <div id="bot-detail-modal" class="modal-overlay">
+    <div class="modal-card bot-detail-card">
+      <div class="bot-detail-head">
+        <div id="bot-detail-avatar" class="bot-detail-avatar"></div>
+        <div class="bot-detail-head-text">
+          <div id="bot-detail-name" class="bot-detail-name">Имя</div>
+          <div id="bot-detail-title" class="bot-detail-title">Титул</div>
+        </div>
+        <div id="bot-detail-elo" class="bot-detail-elo">2400</div>
+      </div>
+
+      <div class="bot-detail-body">
+        <p id="bot-detail-style" class="bot-detail-style"></p>
+
+        <div class="bot-detail-section">
+          <h4>Особые способности</h4>
+          <div id="bot-detail-abilities" class="detail-abilities"></div>
+        </div>
+
+        <div class="bot-detail-section">
+          <h4>Уникальная черта</h4>
+          <p id="bot-detail-special" class="bot-detail-special"></p>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button id="bot-detail-play-btn" class="btn btn-primary"><span class="ico" data-icon="swords"></span> Играть против него</button>
+        <button class="btn btn-outline" data-close="1">Закрыть</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="logo-area">
+      <span class="logo-icon" data-piece="wP"></span>
+      <span>Королевские Шахматы</span>
+    </div>
+
+    <div class="header-actions">
+      <!-- Board Theme Selector -->
+      <select id="theme-select" title="Тема доски">
+        <option value="wood">Деревянная</option>
+        <option value="green">Турнирная (Зелёная)</option>
+        <option value="blue">Морская (Синяя)</option>
+        <option value="cyber">Киберпанк (Неон)</option>
+      </select>
+
+      <!-- Sound Toggle -->
+      <button id="sound-btn" class="btn btn-outline" title="Звуки">
+        <span id="sound-icon" data-icon="sound"></span>
+      </button>
+
+      <!-- Main Menu -->
+      <button id="menu-btn" class="btn btn-outline" title="Главное меню">
+        <span class="ico" data-icon="menu"></span> Меню
+      </button>
+
+      <!-- New Game Trigger -->
+      <button id="header-new-game-btn" class="btn btn-primary">
+        <span>+ Новая игра</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="main-container">
+    <!-- Board Section -->
+    <div class="board-section">
+      <!-- Analysis Banner (только в режиме анализа) -->
+      <div id="analysis-banner" class="analysis-banner">
+        <span class="analysis-banner-badge"><span class="ico" data-icon="chart"></span> Анализ матча</span>
+        <span id="analysis-banner-info" class="analysis-banner-info"></span>
+        <div class="analysis-banner-actions">
+          <button id="analysis-prev-mistake" class="btn btn-mini" title="Предыдущая ошибка"><span class="ico" data-icon="warn"></span></button>
+          <button id="analysis-first-btn" class="btn btn-mini" title="В начало"><span class="ico" data-icon="first"></span></button>
+          <button id="analysis-prev-btn" class="btn btn-mini" title="Предыдущий ход"><span class="ico" data-icon="chevronLeft"></span></button>
+          <button id="analysis-next-btn" class="btn btn-mini" title="Следующий ход"><span class="ico" data-icon="chevronRight"></span></button>
+          <button id="analysis-last-btn" class="btn btn-mini" title="В конец"><span class="ico" data-icon="last"></span></button>
+          <button id="analysis-next-mistake" class="btn btn-mini" title="Следующая ошибка"><span class="ico" data-icon="warn"></span></button>
+          <button id="analysis-exit-btn" class="btn btn-outline btn-mini"><span class="ico" data-icon="close"></span> Выйти</button>
+        </div>
+      </div>
+
+      <!-- Top Player Bar -->
+      <div id="top-player-bar" class="player-bar">
+        <div class="player-info">
+          <div id="top-player-avatar" class="player-avatar"></div>
+          <div class="player-name-wrap">
+            <span id="top-player-name" class="player-name">ИИ (Уровень 3)</span>
+            <div id="top-player-captures" class="player-captures"></div>
+          </div>
+        </div>
+        <div id="top-player-timer" class="player-timer">10:00</div>
+      </div>
+
+      <!-- Chess Board Container -->
+      <div class="board-wrapper">
+        <div id="eval-bar" class="eval-bar">
+          <div id="eval-bar-fill" class="eval-bar-fill"></div>
+          <span id="eval-bar-label" class="eval-bar-label">0.0</span>
+        </div>
+        <div id="chessboard" class="chessboard"></div>
+        <svg id="board-overlay" class="board-overlay"></svg>
+      </div>
+
+      <!-- Bottom Player Bar -->
+      <div id="bottom-player-bar" class="player-bar">
+        <div class="player-info">
+          <div id="bottom-player-avatar" class="player-avatar"></div>
+          <div class="player-name-wrap">
+            <span id="bottom-player-name" class="player-name">Игрок (Белые)</span>
+            <div id="bottom-player-captures" class="player-captures"></div>
+          </div>
+        </div>
+        <div id="bottom-player-timer" class="player-timer">10:00</div>
+      </div>
+    </div>
+
+    <!-- Sidebar Panel -->
+    <aside class="sidebar-panel">
+      <div class="panel-header">
+        <span id="panel-title">История партии</span>
+        <span id="game-status-indicator" class="game-status-text">Ход белых</span>
+      </div>
+
+      <!-- Analysis summary (только в режиме анализа) -->
+      <div id="analysis-summary" class="analysis-summary"></div>
+
+      <!-- График оценки (только в режиме анализа) -->
+      <div id="eval-graph-wrap" class="eval-graph-wrap" style="display:none;">
+        <div class="eval-graph-title">Оценка по ходам <span id="eval-graph-hint">нажмите, чтобы перейти</span></div>
+        <canvas id="eval-graph" width="520" height="150"></canvas>
+      </div>
+
+      <!-- Move History -->
+      <div id="move-history-container" class="move-history-container">
+        <table id="move-table" class="move-table">
+          <tbody id="move-table-body">
+            <!-- Dynamic move rows -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Онлайн-панель (только в онлайн-партии) -->
+      <div id="online-game-panel" class="online-game-panel" style="display:none;">
+        <div class="online-game-head">
+          <span id="online-game-status">Подключено</span>
+          <span id="online-game-spectators" class="pill"></span>
+        </div>
+        <div id="online-game-chat" class="online-chat-log"></div>
+        <div class="online-chat-input">
+          <input id="online-game-chat-text" maxlength="300" placeholder="Чат партии...">
+          <button id="online-game-chat-send" class="btn btn-primary btn-sm"><span class="ico" data-icon="play"></span></button>
+        </div>
+        <div class="online-game-buttons">
+          <button id="online-draw-btn" class="btn btn-outline"><span class="ico" data-icon="scale"></span> Ничья</button>
+          <button id="online-resign-btn" class="btn btn-outline"><span class="ico" data-icon="flag"></span> Сдаться</button>
+        </div>
+        <button id="online-leave-btn" class="btn btn-outline btn-block">Выйти из партии</button>
+      </div>
+
+      <!-- Panel Action Controls -->
+      <div class="panel-controls">
+        <div class="button-grid">
+          <button id="undo-btn" class="btn" title="Отменить последний ход">
+            <span class="ico" data-icon="undo"></span> Ход назад
+          </button>
+          <button id="hint-btn" class="btn" title="Подсказка лучшего хода">
+            <span class="ico" data-icon="bulb"></span> Подсказка
+          </button>
+          <button id="flip-btn" class="btn" title="Перевернуть доску">
+            <span class="ico" data-icon="flip"></span> Поворот
+          </button>
+          <button id="pgn-btn" class="btn" title="Экспорт PGN / FEN">
+            <span class="ico" data-icon="copy"></span> PGN/FEN
+          </button>
+          <button id="new-game-btn" class="btn btn-primary" style="grid-column: span 4;">
+            <span class="ico" data-icon="flag"></span> Новая игра
+          </button>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="toast">Уведомление</div>
+
+  <!-- ==================== АНАЛИЗ: ЗАГРУЗКА ==================== -->
+  <div id="analysis-loading" class="modal-overlay">
+    <div class="modal-card" style="width: min(90vw, 380px);">
+      <div class="modal-header"><span class="ico" data-icon="chart"></span> Анализ матча</div>
+      <div class="modal-body">
+        <p style="color: var(--text-muted); font-size: 0.9rem;" id="analysis-loading-text">
+          Разбираем партию ход за ходом...
+        </p>
+        <div class="progress-track">
+          <div id="analysis-progress" class="progress-fill"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- New Game Settings Modal -->
+  <div id="new-game-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">Настройки новой игры</div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Режим игры:</label>
+          <select id="setting-game-mode">
+            <option value="pve">Игрок против Бота</option>
+            <option value="pvp">Игрок против Игрока (на одном экране)</option>
+            <option value="eve">Бот против Бота (Демо)</option>
+          </select>
+        </div>
+
+        <div id="ai-settings-group" class="form-group">
+          <label>Соперник (бот):</label>
+          <select id="setting-bot-select"></select>
+        </div>
+
+        <div id="side-settings-group" class="form-group">
+          <label>Играть фигурами:</label>
+          <div class="radio-group" id="setting-side-cards">
+            <div class="radio-card active" data-side="w">
+              <span><span class="ico" data-piece="wP"></span> Белые</span>
+            </div>
+            <div class="radio-card" data-side="random">
+              <span><span class="ico" data-icon="dice"></span> Случайно</span>
+            </div>
+            <div class="radio-card" data-side="b">
+              <span><span class="ico" data-piece="bP"></span> Чёрные</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Контроль времени (таймер):</label>
+          <select id="setting-time-control"></select>
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 8px;">
+          <button id="modal-start-game-btn" class="btn btn-primary" style="flex: 1;">
+            Начать игру
+          </button>
+          <button id="modal-cancel-game-btn" class="btn btn-outline">
+            Отмена
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pawn Promotion Modal -->
+  <div id="promotion-modal" class="modal-overlay">
+    <div class="modal-card" style="width: 320px;">
+      <div class="modal-header">Превращение пешки</div>
+      <div class="modal-body">
+        <p style="text-align: center; color: var(--text-muted); font-size: 0.9rem;">
+          Выберите новую фигуру:
+        </p>
+        <div id="promo-pieces-container" class="promo-pieces-grid">
+          <!-- Filled dynamically with pieces -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Game Over Modal -->
+  <div id="game-over-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div id="game-over-title" class="modal-header">Партия завершена</div>
+      <div class="modal-body" style="text-align: center;">
+        <div id="game-over-icon" class="game-over-icon"></div>
+        <div id="game-over-reason" style="font-size: 1.15rem; font-weight: 700; color: var(--accent);">
+          Мат! Победили Белые
+        </div>
+        <div id="game-over-result" style="color: var(--text-muted); font-size: 0.95rem; margin-top: 4px;">
+          Результат: 1-0
+        </div>
+        <div style="display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap;">
+          <button id="game-over-analyze-btn" class="btn btn-primary" style="flex: 1 1 100%;">
+            <span class="ico" data-icon="chart"></span> Анализировать матч
+          </button>
+          <button id="game-over-rematch-btn" class="btn" style="flex: 1;">
+            <span class="ico" data-icon="refresh"></span> Сыграть ещё раз
+          </button>
+          <button id="game-over-close-btn" class="btn btn-outline" style="flex: 1;">
+            Просмотр доски
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PGN / FEN Modal -->
+  <div id="pgn-modal" class="modal-overlay">
+    <div class="modal-card" style="width: min(90vw, 500px);">
+      <div class="modal-header">Экспорт партии (PGN & FEN)</div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Текущая позиция (FEN):</label>
+          <input type="text" id="fen-input" readonly>
+          <button id="copy-fen-btn" class="btn" style="margin-top: 4px;">
+            Скопировать FEN
+          </button>
+        </div>
+
+        <div class="form-group" style="margin-top: 10px;">
+          <label>Запись партии (PGN):</label>
+          <textarea id="pgn-textarea" rows="6" readonly style="width: 100%; background: var(--bg-primary); border: 1px solid var(--bg-tertiary); color: var(--text-main); border-radius: 6px; padding: 8px; font-family: monospace; font-size: 0.85rem; resize: none;"></textarea>
+          <div style="display: flex; gap: 8px; margin-top: 4px;">
+            <button id="copy-pgn-btn" class="btn" style="flex: 1;">
+              Скопировать PGN
+            </button>
+            <button id="download-pgn-btn" class="btn" style="flex: 1;">
+              Скачать .pgn
+            </button>
+          </div>
+        </div>
+
+        <button id="close-pgn-modal-btn" class="btn btn-outline" style="margin-top: 10px;">
+          Закрыть
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="pieces.js"></script>
+  <script src="icons.js"></script>
+  <script src="audio.js"></script>
+  <script src="bots.js"></script>
+  <script src="engine.js"></script>
+  <script src="ai.js"></script>
+  <script src="stockfish-engine.js"></script>
+  <script src="openings.js"></script>
+  <script src="analysis.js"></script>
+  <script src="online.js"></script>
+  <script src="menu.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

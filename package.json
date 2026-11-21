@@ -1,0 +1,14 @@
+{
+  "name": "royal-chess-online",
+  "version": "2.0.0",
+  "description": "Королевские Шахматы — онлайн-шахматы с матчмейкингом по ЭЛО, Stockfish и разбором партий",
+  "private": true,
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
